@@ -4,6 +4,7 @@ import scrapy
 import os
 import csv
 import glob
+
 import MySQLdb
 
 
@@ -19,10 +20,13 @@ class JobsSpider(scrapy.Spider):
             title = item.xpath('./p/a/text()').extract_first()
             place = item.xpath('./p/span[@class = "result-meta"]/span[@class = "result-hood"]/text()').extract_first()            
             
-            yield scrapy.Request(response.urljoin(link),callback=self.parse_detail)
-            # meta = {'Link':link,
-            #         'Title':title,
-            #         'Place':place})
+            yield scrapy.Request(response.urljoin(link),
+            callback=self.parse_detail,
+            meta = {'Link':link,
+                    'Title':title,
+                    'Place':place})
+            
+            
             
         nextpageurl = response.xpath('//*[@id="searchform"]/div[5]/div[3]/span[2]/a[3]/@href').extract_first()
         if nextpageurl:
@@ -40,6 +44,7 @@ class JobsSpider(scrapy.Spider):
                 'Place':place,
                 'Link':link,
                 'Date':date,
+                
                 }
         
         
